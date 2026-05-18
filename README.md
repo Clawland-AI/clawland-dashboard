@@ -17,20 +17,27 @@ Fleet visualization dashboard for the Clawland edge AI ecosystem.
 - **Command Center** — Send commands to individual nodes or node groups
 - **Configuration** — Remote agent configuration management
 
-## Screenshots
+## Current Implementation
 
-> Coming soon — Dashboard is in active development.
+This repository now ships a runnable Fleet Manager Dashboard:
+
+- Real-time node status overview with online, warning, critical, and offline states
+- Geolocated node map with selectable fleet nodes
+- Alert aggregation with severity filtering and acknowledgment state display
+- Sensor trend visualization for node-level telemetry
+- Command dispatch form that posts to Fleet Manager or simulates queueing in demo mode
+- Fleet API polling plus optional WebSocket updates, with mock data fallback for local demos
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
 | Framework | React 19 + TypeScript |
-| State | Zustand |
-| Charts | Recharts |
-| Maps | Leaflet |
-| Real-time | WebSocket |
-| Styling | Tailwind CSS |
+| State | React hooks |
+| Charts | SVG line chart |
+| Maps | SVG geolocation view |
+| Real-time | Fleet API polling + optional WebSocket |
+| Styling | CSS variables and responsive grid |
 | Build | Vite |
 
 ## Quick Start
@@ -44,29 +51,54 @@ npm run dev
 
 Open http://localhost:5173 and connect to your moltclaw Fleet Manager endpoint.
 
+If no endpoint is configured, the dashboard runs with deterministic demo telemetry so reviewers can inspect every view without starting a backend.
+
+## Fleet API Contract
+
+Set the endpoint in the top-right input, or leave it blank for demo mode. The dashboard expects:
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/fleet/nodes` | Returns fleet node status records |
+| GET | `/fleet/events` | Returns alert/event records |
+| GET | `/fleet/metrics` | Returns node sensor series |
+| WS | `/fleet/ws` | Optional live partial snapshot updates |
+| POST | `/fleet/command` | Queues a command for a target node |
+
+Command dispatch payload:
+
+```json
+{
+  "target_node_id": "pond-guardian-07",
+  "type": "run_skill",
+  "payload": {
+    "skill": "diagnostics",
+    "mode": "quick"
+  }
+}
+```
+
 ## Directory Structure
 
 ```
 clawland-dashboard/
 ├── src/
-│   ├── components/
-│   │   ├── NodeMap/           # Geographic node visualization
-│   │   ├── AlertTimeline/     # Alert feed and management
-│   │   ├── SensorCharts/      # Sensor data visualization
-│   │   ├── FleetOverview/     # Fleet health dashboard
-│   │   ├── CommandCenter/     # Remote command interface
-│   │   └── Layout/            # App shell and navigation
-│   ├── hooks/                 # WebSocket and data hooks
-│   ├── stores/                # Zustand state stores
-│   ├── api/                   # Fleet API client
-│   ├── types/                 # TypeScript type definitions
+│   ├── fleetClient.ts         # Fleet API and command dispatch client
+│   ├── mockData.ts            # Demo telemetry for local review
+│   ├── styles.css             # Dashboard layout and responsive styling
+│   ├── types.ts               # TypeScript type definitions
 │   └── App.tsx
 ├── public/
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
-├── tailwind.config.ts
 └── README.md
+```
+
+## Validation
+
+```bash
+npm run build
 ```
 
 ## Related Repositories
