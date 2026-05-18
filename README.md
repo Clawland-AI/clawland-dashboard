@@ -17,6 +17,12 @@ Fleet visualization dashboard for the Clawland edge AI ecosystem.
 - **Command Center** — Send commands to individual nodes or node groups
 - **Configuration** — Remote agent configuration management
 
+## Screenshots
+
+![Desktop dashboard](docs/screenshots/dashboard-desktop.png)
+
+![Mobile dashboard](docs/screenshots/dashboard-mobile.png)
+
 ## Current Implementation
 
 This repository now ships a runnable Fleet Manager Dashboard:
